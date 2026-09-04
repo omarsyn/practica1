@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../models/ApiUser.php'; // <-- Cambio a ApiUser
+require_once __DIR__ . '/../../models/ApiUser.php';
 require_once __DIR__ . '/../../models/Token.php';
 require_once __DIR__ . '/../../core/AuthMiddleware.php';
 

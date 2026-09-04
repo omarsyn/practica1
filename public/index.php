@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
@@ -10,20 +13,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once '../core/Router.php';
+require_once __DIR__ . '/../core/Router.php';
 
 // Cargar Recursos V1
-require_once '../resources/v1/UserResource.php';
-require_once '../resources/v1/ProductResource.php';
+require_once __DIR__ . '/../resources/v1/UserResource.php';
+require_once __DIR__ . '/../resources/v1/ProductResource.php';
 
 // Cargar Recursos V2, Modelos y Middleware
-require_once '../resources/v2/AuthResource.php';
-require_once '../resources/v2/ProductResource.php';
+require_once __DIR__ . '/../resources/v2/AuthResource.php';
+require_once __DIR__ . '/../resources/v2/ProductResource.php';
 
 $basePath = '/22031401/public/api';
-$requestUri = $_SERVER['REQUEST_URI'];
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
 
-if (strpos($requestUri, '/api/v2') !== false) {
+if (strpos($requestUri, '/v2') !== false) {
     // --- RUTAS VERSIÓN 2 (Protegidas) ---
     $routerV2 = new Router('v2', $basePath);
     $authResource = new AuthResource();
@@ -42,9 +45,8 @@ if (strpos($requestUri, '/api/v2') !== false) {
     $routerV2->addRoute('DELETE', '/productos/{id}', [$productV2Resource, 'destroy']);
 
     $routerV2->dispatch();
-
 } else {
-    // --- RUTAS VERSIÓN 1 (Públicas original) ---
+    // --- RUTAS VERSIÓN 1 (Públicas) ---
     $routerV1 = new Router('v1', $basePath);
     $userResource = new UserResource();
     $productResource = new ProductResource();
