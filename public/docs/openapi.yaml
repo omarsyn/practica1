@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: API de Gestión de Tareas (API-First)
+  description: API RESTful desarrollada bajo el enfoque API-First.
+  version: 1.0.0
+  contact:
+    name: Omar Avila
+    email: u22031401@celaya.tecnm.mx
+
+servers:
+  - url: http://localhost:8000/api/v2
+    description: Servidor Local (WSL)
+  - url: http://topicosweb.celaya.tecnm.mx/22031401/public/api/v2
+    description: Servidor VPS Producción
+
+paths:
+  /tareas:
+    get:
+      summary: Listar todas las tareas
+      operationId: getTareas
+      responses:
+        '200':
+          description: Lista de tareas recuperada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tarea'
+
+    post:
+      summary: Crear una nueva tarea
+      operationId: createTarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NuevaTareaInput'
+      responses:
+        '201':
+          description: Tarea creada exitosamente.
+
+  /tareas/{id}:
+    get:
+      summary: Obtener tarea por ID
+      operationId: getTareaById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles de la tarea.
+
+    put:
+      summary: Actualizar tarea
+      operationId: updateTarea
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActualizarTareaInput'
+      responses:
+        '200':
+          description: Tarea actualizada.
+
+components:
+  schemas:
+    Tarea:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        titulo:
+          type: string
+          example: "Estudiar API-First"
+        completada:
+          type: boolean
+          example: false
+        fecha_creacion:
+          type: string
+          format: date-time
+
+    NuevaTareaInput:
+      type: object
+      required:
+        - titulo
+      properties:
+        titulo:
+          type: string
+          example: "Estudiar API-First"
+        completada:
+          type: boolean
+          default: false
+
+    ActualizarTareaInput:
+      type: object
+      properties:
+        titulo:
+          type: string
+          example: "Estudiar API-First y OpenAPI"
+        completada:
+          type: boolean
+          example: true
