@@ -22,15 +22,17 @@ require_once __DIR__ . '/../resources/v1/ProductResource.php';
 // Cargar Recursos V2, Modelos y Middleware
 require_once __DIR__ . '/../resources/v2/AuthResource.php';
 require_once __DIR__ . '/../resources/v2/ProductResource.php';
+require_once __DIR__ . '/../resources/v2/TaskResource.php';
 
 $basePath = '/22031401/public/api';
 $requestUri = $_SERVER['REQUEST_URI'] ?? '';
 
 if (strpos($requestUri, '/v2') !== false) {
-    // --- RUTAS VERSIÓN 2 (Protegidas) ---
+    // --- RUTAS VERSIÓN 2 (Protegidas / API-First) ---
     $routerV2 = new Router('v2', $basePath);
     $authResource = new AuthResource();
     $productV2Resource = new ProductResourceV2();
+    $taskResource = new TaskResource();
 
     // Endpoints de Autenticación
     $routerV2->addRoute('POST', '/login', [$authResource, 'login']);
@@ -43,6 +45,12 @@ if (strpos($requestUri, '/v2') !== false) {
     $routerV2->addRoute('POST', '/productos', [$productV2Resource, 'store']);
     $routerV2->addRoute('PUT', '/productos/{id}', [$productV2Resource, 'update']);
     $routerV2->addRoute('DELETE', '/productos/{id}', [$productV2Resource, 'destroy']);
+
+    // Endpoints de Tareas (API-First)
+    $routerV2->addRoute('GET', '/tareas', [$taskResource, 'get']);
+    $routerV2->addRoute('GET', '/tareas/{id}', [$taskResource, 'get']);
+    $routerV2->addRoute('POST', '/tareas', [$taskResource, 'post']);
+    $routerV2->addRoute('PUT', '/tareas/{id}', [$taskResource, 'put']);
 
     $routerV2->dispatch();
 } else {
