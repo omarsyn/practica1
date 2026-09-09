@@ -30,6 +30,11 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '';
 if (strpos($requestUri, '/v2') !== false) {
     // --- RUTAS VERSIÓN 2 (Protegidas / API-First) ---
     $routerV2 = new Router('v2', $basePath);
+    
+    // Obtener la conexión a la Base de Datos
+    require_once __DIR__ . '/../config/Database.php';
+    $db = Database::getInstance()->getConnection();
+
     $authResource = new AuthResource();
     $productV2Resource = new ProductResourceV2();
     $taskResource = new TaskResource($db);
@@ -53,19 +58,5 @@ if (strpos($requestUri, '/v2') !== false) {
     $routerV2->addRoute('PUT', '/tareas/{id}', [$taskResource, 'put']);
 
     $routerV2->dispatch();
-} else {
-    // --- RUTAS VERSIÓN 1 (Públicas) ---
-    $routerV1 = new Router('v1', $basePath);
-    $userResource = new UserResource();
-    $productResource = new ProductResource();
-
-    $routerV1->addRoute('GET', '/users', [$userResource, 'index']);
-    $routerV1->addRoute('GET', '/productos', [$productResource, 'index']);
-    $routerV1->addRoute('GET', '/productos/{id}', [$productResource, 'show']);
-    $routerV1->addRoute('POST', '/productos', [$productResource, 'store']);
-    $routerV1->addRoute('PUT', '/productos/{id}', [$productResource, 'update']);
-    $routerV1->addRoute('DELETE', '/productos/{id}', [$productResource, 'destroy']);
-
-    $routerV1->dispatch();
 }
 ?>
