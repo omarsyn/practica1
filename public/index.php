@@ -32,7 +32,7 @@ if (strpos($requestUri, '/v2') !== false) {
     $routerV2 = new Router('v2', $basePath);
     $authResource = new AuthResource();
     $productV2Resource = new ProductResourceV2();
-    $taskResource = new TaskResource();
+    $taskResource = new TaskResource($db);
 
     // Endpoints de Autenticación
     $routerV2->addRoute('POST', '/login', [$authResource, 'login']);
